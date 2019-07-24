@@ -13,6 +13,10 @@ class FeatureToggleIntegration {
 
     @Autowired
     constructor(configuration: ToggleConfiguration, webClient: WebClient) {
+
+        if(configuration.serverUrl.isEmpty() || configuration.serverUrl.isBlank())
+            throw EmptyServerUrlException()
+
         this.configuration = configuration
         this.webClient = webClient
     }

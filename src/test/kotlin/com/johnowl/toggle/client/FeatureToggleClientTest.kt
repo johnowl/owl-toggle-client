@@ -15,6 +15,10 @@ class FeatureToggleClientTest {
         on { serverUrl } doReturn "http://localhost/"
     }
 
+    private val emptyUrlConfiguration: ToggleConfiguration = mock {
+        on { serverUrl } doReturn ""
+    }
+
     @Test
     fun `should return false when toggle does not exist and defaultValue is omitted`() {
 
@@ -110,6 +114,16 @@ class FeatureToggleClientTest {
 
         assertThrows<ServerCommuncationProblem> {
             client.isEnabled("my_toggle", "user123")
+        }
+    }
+
+    @Test
+    fun `should throw exception when server url configuration is empty`() {
+
+        val webClient: WebClient = mock()
+
+        assertThrows<EmptyServerUrlException> {
+            FeatureToggleIntegration(emptyUrlConfiguration, webClient)
         }
     }
 
