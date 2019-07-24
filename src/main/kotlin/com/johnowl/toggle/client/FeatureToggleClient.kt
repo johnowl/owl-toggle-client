@@ -17,7 +17,7 @@ class FeatureToggleClient {
         return integration.sendVariables(userId, variables)
     }
 
-    fun isEnabled(featureToggleId: String, userId: String, defaultValue: Boolean): Boolean {
+    fun isEnabled(featureToggleId: String, userId: String, defaultValue: Boolean = false): Boolean {
         return integration.isEnabled(featureToggleId, userId, defaultValue)
     }
 
