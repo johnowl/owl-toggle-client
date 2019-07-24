@@ -19,6 +19,11 @@ dependencies {
     implementation("org.springframework:spring-context:5.1.8.RELEASE")
     implementation("org.springframework:spring-expression:5.1.8.RELEASE")
     implementation("org.springframework:spring-web:5.1.8.RELEASE")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.+")
+    testImplementation("org.mockito:mockito-inline:2.13.0")
+
 }
 
 tasks.withType<KotlinCompile> {

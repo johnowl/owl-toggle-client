@@ -2,24 +2,25 @@ package com.johnowl.toggle.client
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 @Service
 class FeatureToggleIntegration {
 
-    private val restTemplate = RestTemplate()
+    private val webClient : WebClient
     private val configuration: ToggleConfiguration
 
     @Autowired
-    constructor(configuration: ToggleConfiguration) {
+    constructor(configuration: ToggleConfiguration, webClient: WebClient) {
         this.configuration = configuration
+        this.webClient = webClient
     }
 
     fun sendVariables(userId: String, variables: Map<String, Any>) {
 
-        val response = restTemplate.postForEntity("${configuration.serverUrl}/variables/$userId", variables, String::class.java)
+        val url = "${configuration.serverUrl}/variables/$userId"
+        val response = webClient.post(url, variables)
 
         if(response.statusCode != HttpStatus.OK) {
             throw ServerCommuncationProblem("Server response was ${response.statusCode}")
@@ -28,13 +29,18 @@ class FeatureToggleIntegration {
 
     fun isEnabled(featureToggleId: String, userId: String, defaultValue: Boolean = false): Boolean {
 
-        val response = restTemplate.getForEntity("${configuration.serverUrl}/toggles/$featureToggleId/check/$userId", String::class.java)
+        val url = "${configuration.serverUrl}/toggles/$featureToggleId/check/$userId"
+        val response = webClient.get(url)
+
+        if(response.statusCode == HttpStatus.OK) {
+            return response.body == "true"
+        }
 
         if(response.statusCode == HttpStatus.NOT_FOUND) {
             return defaultValue
         }
 
-        return response.body == "true"
+        throw ServerCommuncationProblem("Server response was ${response.statusCode}")
     }
 
 
