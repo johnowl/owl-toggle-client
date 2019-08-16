@@ -1,5 +1,8 @@
 # Client for [feature toggle server](https://github.com/johnowl/owl-toggle-server)
 
+[![CircleCI](https://circleci.com/gh/johnowl/owl-toggle-client.svg?style=svg)](https://circleci.com/gh/johnowl/owl-toggle-client)
+[![codecov](https://codecov.io/gh/johnowl/owl-toggle-client/branch/master/graph/badge.svg)](https://codecov.io/gh/johnowl/owl-toggle-client)
+
 The feature toggle client has two methods
 
 - `sendVariables(userId: String, variables: Map<String, Any>): Unit`
