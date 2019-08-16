@@ -126,6 +126,4 @@ class FeatureToggleClientTest {
             FeatureToggleIntegration(emptyUrlConfiguration, webClient)
         }
     }
-
-
 }

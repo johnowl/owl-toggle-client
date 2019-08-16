@@ -12,5 +12,4 @@ class FeatureToggleClient(private val integration: FeatureToggleIntegration) {
     fun isEnabled(featureToggleId: String, userId: String, defaultValue: Boolean = false): Boolean {
         return integration.isEnabled(featureToggleId, userId, defaultValue)
     }
-
 }

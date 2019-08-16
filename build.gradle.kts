@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.3.41"
+    id("org.jlleitschuh.gradle.ktlint") version "8.2.0"
 }
 
 group = "com.johnowl.toggle"
@@ -23,7 +24,6 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.+")
     testImplementation("org.mockito:mockito-inline:2.13.0")
-
 }
 
 tasks.withType<KotlinCompile> {
