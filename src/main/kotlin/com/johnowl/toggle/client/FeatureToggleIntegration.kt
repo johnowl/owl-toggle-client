@@ -9,6 +9,7 @@ class FeatureToggleIntegration {
 
     private val webClient: WebClient
     private val configuration: ToggleConfiguration
+    private val serverUrl: String
 
     @Autowired
     constructor(configuration: ToggleConfiguration, webClient: WebClient) {
@@ -18,11 +19,16 @@ class FeatureToggleIntegration {
 
         this.configuration = configuration
         this.webClient = webClient
+
+        serverUrl = if (configuration.serverUrl.endsWith("/"))
+            configuration.serverUrl.trimEnd('/')
+        else
+            configuration.serverUrl
     }
 
     fun sendVariables(userId: String, variables: Map<String, Any>) {
 
-        val url = "${configuration.serverUrl}/variables/$userId"
+        val url = "$serverUrl/variables/$userId"
         val response = webClient.post(url, variables)
 
         if (response.statusCode != HttpStatus.OK) {
@@ -32,7 +38,7 @@ class FeatureToggleIntegration {
 
     fun isEnabled(featureToggleId: String, userId: String, defaultValue: Boolean = false): Boolean {
 
-        val url = "${configuration.serverUrl}/toggles/$featureToggleId/check/$userId"
+        val url = "$serverUrl/toggles/$featureToggleId/check/$userId"
         val response = webClient.get(url)
 
         if (response.statusCode == HttpStatus.OK) {

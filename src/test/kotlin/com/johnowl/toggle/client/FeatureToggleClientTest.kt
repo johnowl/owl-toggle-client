@@ -1,7 +1,9 @@
 package com.johnowl.toggle.client
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -125,5 +127,62 @@ class FeatureToggleClientTest {
         assertThrows<EmptyServerUrlException> {
             FeatureToggleIntegration(emptyUrlConfiguration, webClient)
         }
+    }
+
+    @Test
+    fun `should send variables silently when status code is 200`() {
+        val webClient: WebClient = mock {
+            on { post(anyString(), any()) } doReturn ResponseEntity("", HttpStatus.OK)
+        }
+
+        val integration = FeatureToggleIntegration(configuration, webClient)
+        integration.sendVariables("", emptyMap())
+
+        verify(webClient).post("http://localhost/variables/", emptyMap<String, Any>())
+    }
+
+    @Test
+    fun `should throw exception when try to send variables and receiver status code 400`() {
+        val webClient: WebClient = mock {
+            on { post(anyString(), any()) } doReturn ResponseEntity("", HttpStatus.BAD_REQUEST)
+        }
+
+        val integration = FeatureToggleIntegration(configuration, webClient)
+
+        assertThrows<ServerCommuncationProblem> {
+            integration.sendVariables("", emptyMap())
+        }
+    }
+
+    @Test
+    fun `should remove last char from server url when it is a slash and we call post method`() {
+        val webClient: WebClient = mock {
+            on { post(anyString(), any()) } doReturn ResponseEntity("", HttpStatus.OK)
+        }
+
+        val configuration: ToggleConfiguration = mock {
+            on { serverUrl } doReturn "http://localhost/"
+        }
+
+        val integration = FeatureToggleIntegration(configuration, webClient)
+        integration.sendVariables("", emptyMap())
+
+        verify(webClient).post("http://localhost/variables/", emptyMap<String, Any>())
+    }
+
+    @Test
+    fun `should remove last char from server url when it is a slash and we call get method`() {
+        val webClient: WebClient = mock {
+            on { get(anyString()) } doReturn ResponseEntity("", HttpStatus.OK)
+        }
+
+        val configuration: ToggleConfiguration = mock {
+            on { serverUrl } doReturn "http://localhost/"
+        }
+
+        val integration = FeatureToggleIntegration(configuration, webClient)
+        integration.isEnabled("toggle", "user")
+
+        verify(webClient).get("http://localhost/toggles/toggle/check/user")
     }
 }
