@@ -47,8 +47,8 @@ It's were the magic happens! It's the method used to check if a feature toggle i
 the first one is the feature toggle identification, the second is the user id and the third one is an optional parameter with 
 a default value to return if the feature toggle doesn't exist. Example of use:
 
-  @Service
-  class TimelineService {
+    @Service
+    class TimelineService {
 
       private val featureToggleClient: FeatureToggleClient
       private const val FEATURE_TOGGLE_ID = "my_toggle"
